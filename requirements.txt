@@ -1,1 +1,5 @@
 requests
+jupyter
+pandas
+numpy
+tokenizers
