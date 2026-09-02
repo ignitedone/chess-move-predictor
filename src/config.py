@@ -37,9 +37,21 @@ def get_config() -> Dict[str, Any]:
                 more padding/compute for quadratic-in-context attention
                 cost; see REPORT_NOTES.md for the full percentile/tradeoff
                 table this was picked from.
+            model_dimension (int): embedding/model dimension (d_model).
+            num_layers (int): number of decoder blocks stacked.
+            num_heads (int): number of self-attention heads per block.
+            feed_forward_dimension (int): hidden dimension of each block's
+                feed-forward sublayer.
+            dropout (float): dropout rate used throughout the model.
 
-        More fields (batch_size, model_dimension, etc.) will be added here
-        as model.py/train.py are implemented.
+                model_dimension/num_layers/num_heads/feed_forward_dimension/
+                dropout are provisional starting points (small, given the
+                vocab is only 5,543 tokens) — see REPORT_NOTES.md for the
+                compute-feasibility check they'll be finalized against
+                before Stage 3 training begins in earnest.
+
+        More fields (batch_size, learning_rate, etc.) will be added here
+        as train.py is implemented.
     """
     return {
         "seed": 561,
@@ -54,4 +66,9 @@ def get_config() -> Dict[str, Any]:
         "min_frequency": 1,
         "vocab_size": 1_000_000,
         "context_size": 128,
+        "model_dimension": 256,
+        "num_layers": 6,
+        "num_heads": 8,
+        "feed_forward_dimension": 1024,
+        "dropout": 0.1,
     }

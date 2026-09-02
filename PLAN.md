@@ -18,12 +18,13 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 
 ## Stage 2 — Model
 
-- [ ] Copy reference building blocks into `src/model.py`: `InputEmbeddings`, `PositionalEncoding`, `LayerNormalization`, `MultiHeadAttentionBlock`, `FeedForwardBlock`, `ResidualConnection`, `ProjectionLayer`
-- [ ] Adapt `DecoderBlock`: keep causal self-attention + feed-forward sublayers, drop cross-attention and its residual connection
-- [ ] Add `d_model`, `num_layers`, `num_heads`, `d_ff`, `dropout` to `config.py`
-- [ ] Wire into a decoder-only `Transformer` class / `build_transformer()` factory
-- [ ] Sanity check: dummy batch of random token ids through the model, confirm output shape `[batch, context_size, vocab_size]`
-- [ ] **Decision: compute feasibility.** Measure throughput (tokens/sec) for a candidate model size and batch size on a Kaggle T4; estimate steps-per-epoch over ~623M training tokens against the ~30 GPU-hr/week budget; use this to finalize `d_model`/`num_layers`/`num_heads` and to decide Stage 3's checkpoint/validation cadence. Record in `REPORT_NOTES.md`.
+- [x] Copy reference building blocks into `src/model.py`: `InputEmbeddings`, `PositionalEncoding`, `LayerNormalization`, `MultiHeadAttentionBlock`, `FeedForwardBlock`, `ResidualConnection`, `ProjectionLayer`
+- [x] Adapt `DecoderBlock`: keep causal self-attention + feed-forward sublayers, drop cross-attention and its residual connection
+- [x] Add `model_dimension` (256), `num_layers` (6), `num_heads` (8), `feed_forward_dimension` (1024), `dropout` (0.1) to `config.py` as provisional starting values
+- [x] Wire into a decoder-only `Transformer` class / `build_transformer()`/`get_model()` factory
+- [x] Sanity check: real `ChessMoveDataset`/`DataLoader` batch through the model — output shape `(4, 128, 5543)` = `[batch, context_size, vocab_size]`, 7,582,631 total params
+- [x] CPU throughput proxy measured (~400-460 tokens/sec, flat across batch size) — see `REPORT_NOTES.md`; confirms training must run on GPU but doesn't settle model size
+- [ ] **Decision: compute feasibility (real numbers).** First action of Stage 5 — measure throughput (tokens/sec) for the current model/batch size on an actual Kaggle T4; estimate steps-per-epoch over ~623M training tokens against the ~30 GPU-hr/week budget; use this to confirm or resize `model_dimension`/`num_layers`/`num_heads` and to decide Stage 3's checkpoint/validation cadence. Record in `REPORT_NOTES.md`.
 
 ## Stage 3 — Training
 
