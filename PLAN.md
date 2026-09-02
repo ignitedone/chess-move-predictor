@@ -28,14 +28,14 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 
 ## Stage 3 — Training
 
-- [ ] `src/train.py`: training loop adapted from reference `train_model()`, causal-masked forward pass only
-- [ ] Loss: `nn.CrossEntropyLoss(ignore_index=pad_token_id)`, `pad_token_id` sourced from `config.py`
-- [ ] Adam optimizer, lr ≈ 3e-4 (add to `config.py`)
-- [ ] Step-based (not epoch-based) checkpoint/validation/logging cadence, per Stage 2's feasibility check
-- [ ] TensorBoard: `train_loss` per step, validation loss per validation interval
-- [ ] Qualitative validation check: predict next move on a handful of held-out partial games at each validation interval, compare to actual
-- [ ] Checkpointing: model + optimizer state + epoch + global_step, saved to `weights/`; must support resuming from the latest checkpoint
-- [ ] Local smoke test (~500 games, 1 epoch, CPU) before spending any Kaggle GPU time
+- [x] `src/train.py`: training loop adapted from reference `train_model()`, causal-masked forward pass only
+- [x] Loss: `nn.CrossEntropyLoss(ignore_index=pad_token_id)`, `pad_token_id` sourced from `config.py`
+- [x] Adam optimizer, lr = 3e-4 (`config.py`)
+- [x] Step-based (not epoch-based) checkpoint/validation/logging cadence, per Stage 2's feasibility check
+- [x] TensorBoard: `train_loss` per step, validation loss per validation interval
+- [x] Qualitative validation check: predict next move on a handful of held-out partial games at each validation interval, compare to actual
+- [x] Checkpointing: model + optimizer state + epoch + global_step, saved to `weights/`; resume-from-latest verified (fresh run → resume-and-stop → resume-and-continue, all correct)
+- [x] Local smoke test — ran 20-30 steps (not a full "epoch of 500 games": training is step-based now, so that framing doesn't apply) against the real train/val data on CPU; loss fell 8.68 → 6.61, confirming the loop, checkpointing, and resume logic all work before spending any Kaggle GPU time
 
 ## Stage 4 — Evaluation
 
@@ -48,7 +48,7 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 
 ## Stage 5 — Kaggle
 
-- [ ] Create Kaggle account, verify phone number
+- [x] Kaggle account exists (30 GPU-hrs/week, 20 TPU-hrs/week)
 - [ ] New Notebook, set Accelerator to GPU T4 x2 (or P100) before running any cells
 - [ ] Push repo to GitHub (private is fine)
 - [ ] First notebook cell: `!git clone` the repo

@@ -49,9 +49,32 @@ def get_config() -> Dict[str, Any]:
                 vocab is only 5,543 tokens) — see REPORT_NOTES.md for the
                 compute-feasibility check they'll be finalized against
                 before Stage 3 training begins in earnest.
+            batch_size (int): training/validation batch size.
+            learning_rate (float): Adam learning rate.
+            max_steps (int): training stops once `global_step` reaches
+                this. A ceiling, not a target — training is step-based
+                (not epoch-based) specifically because one epoch over the
+                8.25M-game training split is far larger than any single
+                Kaggle session; the real stopping point is decided from
+                actual Kaggle T4 throughput plus remaining time, not
+                fixed in advance. See REPORT_NOTES.md.
+            checkpoint_every_steps (int): how often (in steps) to save a
+                checkpoint to `model_folder`. Kept short so even a brief
+                calibration run saves at least one checkpoint.
+            validate_every_steps (int): how often (in steps) to compute
+                validation loss and print the qualitative next-move check.
+            num_validation_examples (int): how many validation games to
+                print predictions for at each validation interval.
+            model_folder (str): folder where checkpoints are saved.
+            model_basename (str): checkpoint filename prefix; full name is
+                `{model_basename}{global_step}.pt`.
+            preload (str | None): `'latest'` to resume from the most
+                recent checkpoint in `model_folder`, a specific step
+                (str) to resume from that checkpoint, or `None` to start
+                fresh.
+            experiment_name (str): TensorBoard log directory.
 
-        More fields (batch_size, learning_rate, etc.) will be added here
-        as train.py is implemented.
+        More fields will be added here as evaluate.py is implemented.
     """
     return {
         "seed": 561,
@@ -71,4 +94,62 @@ def get_config() -> Dict[str, Any]:
         "num_heads": 8,
         "feed_forward_dimension": 1024,
         "dropout": 0.1,
+        "batch_size": 64,
+        "learning_rate": 3e-4,
+        "max_steps": 100_000,
+        "checkpoint_every_steps": 200,
+        "validate_every_steps": 200,
+        "num_validation_examples": 3,
+        "model_folder": "weights",
+        "model_basename": "chess_transformer_",
+        "preload": "latest",
+        "experiment_name": "runs/chess_transformer",
     }
+
+
+def get_weights_file_path(
+        config,
+        step: str
+    ) -> str:
+    """
+    Get the path to a saved checkpoint for a given training step.
+
+    Args:
+        config: Config file.
+        step (str): Training step (`global_step`) the checkpoint was saved at.
+
+    Returns:
+        str: Path to the checkpoint file.
+    """
+    model_folder = config['model_folder']
+    model_basename = config['model_basename']
+    model_filename = f"{model_basename}{step}.pt"
+
+    return str(Path('.') / model_folder / model_filename)
+
+
+def get_latest_weights(config) -> str:
+    """
+    Get the most recent saved checkpoint from `model_folder`, by step number.
+
+    Args:
+        config: Config file.
+
+    Returns:
+        str | None: Path to the latest checkpoint, or None if the folder
+            has no matching checkpoints yet.
+    """
+    model_folder = config['model_folder']
+    model_basename = config['model_basename']
+    model_filenames = list(Path(model_folder).glob(f"{model_basename}*"))
+
+    if len(model_filenames) == 0:
+        return None
+
+    # Extracts the step int from the filename to sort by.
+    def extract_step(filename):
+        return int(filename.stem.split('_')[-1])
+
+    model_filenames.sort(key = extract_step)
+
+    return str(model_filenames[-1])
