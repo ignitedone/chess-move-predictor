@@ -19,6 +19,9 @@ def get_config() -> Dict[str, Any]:
                 so the ~4GB raw file is never fully loaded into memory.
             tokenizer_file (str): path where the trained move-level
                 tokenizer is saved/loaded.
+            token_frequencies_file (str): path where each move token's
+                training-split occurrence count is saved, as a byproduct
+                of training the tokenizer (see `get_or_build_tokenizer`).
             min_frequency (int): minimum occurrences (in the training
                 split) for a move token to get its own vocabulary entry;
                 rarer moves are folded into [UNK].
@@ -26,6 +29,14 @@ def get_config() -> Dict[str, Any]:
                 trainer. Chess SAN move tokens form a naturally bounded
                 vocabulary, so this is set high enough to act as a no-op
                 cap rather than actually truncating the vocabulary.
+            context_size (int): fixed sequence length (in move tokens,
+                including [SOS]/[EOS]) that every training example is
+                padded/truncated to. Chosen from the training split's move-
+                count distribution (p95 ~= 129 moves) as the point past
+                which reducing truncation further costs disproportionately
+                more padding/compute for quadratic-in-context attention
+                cost; see REPORT_NOTES.md for the full percentile/tradeoff
+                table this was picked from.
 
         More fields (batch_size, model_dimension, etc.) will be added here
         as model.py/train.py are implemented.
@@ -39,6 +50,8 @@ def get_config() -> Dict[str, Any]:
         "test_split": 0.05,
         "csv_chunksize": 100_000,
         "tokenizer_file": "data/tokenizer/tokenizer_chess.json",
+        "token_frequencies_file": "data/tokenizer/tokenizer_chess.freq.json",
         "min_frequency": 1,
         "vocab_size": 1_000_000,
+        "context_size": 128,
     }
