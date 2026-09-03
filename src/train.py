@@ -1,3 +1,4 @@
+import time
 import warnings
 
 from pathlib import Path
@@ -198,7 +199,14 @@ def train_model(config: Dict) -> None:
     train_iterator = iter(train_dataloader)
     progress = tqdm(total = config['max_steps'], initial = global_step, desc = 'Training', unit = ' steps')
 
+    max_train_seconds = config.get('max_train_seconds')
+    start_time = time.time()
+
     while global_step < config['max_steps']:
+        if max_train_seconds is not None and time.time() - start_time > max_train_seconds:
+            progress.write(f"Reached max_train_seconds ({max_train_seconds}s), stopping.")
+            break
+
         try:
             batch = next(train_iterator)
         except StopIteration:
