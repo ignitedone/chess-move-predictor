@@ -152,6 +152,16 @@ def train_model(config: Dict) -> None:
     latest checkpoint (`config['preload'] == 'latest'`), required for
     training across multiple capped Kaggle sessions.
 
+    If `config['max_epochs']` is set, it's converted to a step target
+    (`max_epochs * len(train_dataloader)`) and used in place of
+    `config['max_steps']`. This is preferred over hand-picking a step
+    count: it's exact regardless of batch size, and — because it's
+    compared against `global_step` (which is checkpointed and restored
+    correctly on every resume) rather than relying on any single
+    session's DataLoader iterator running to exhaustion uninterrupted —
+    it stays correct even if reaching that many epochs takes several
+    resumed sessions.
+
     Args:
         config: A config dict (see `get_config`).
     """
@@ -165,6 +175,12 @@ def train_model(config: Dict) -> None:
     pad_id = tokenizer.token_to_id('[PAD]')
 
     train_dataloader, val_dataloader = get_dataloaders(config, tokenizer)
+
+    steps_per_epoch = len(train_dataloader)
+    max_epochs = config.get('max_epochs')
+    max_steps = max_epochs * steps_per_epoch if max_epochs is not None else config['max_steps']
+    print(f"{steps_per_epoch} steps/epoch; training to max_steps={max_steps}"
+          + (f" ({max_epochs} epoch(s))" if max_epochs is not None else ""))
 
     model = get_model(config, vocab_size).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr = config['learning_rate'])
@@ -197,12 +213,12 @@ def train_model(config: Dict) -> None:
 
     model.train()
     train_iterator = iter(train_dataloader)
-    progress = tqdm(total = config['max_steps'], initial = global_step, desc = 'Training', unit = ' steps')
+    progress = tqdm(total = max_steps, initial = global_step, desc = 'Training', unit = ' steps')
 
     max_train_seconds = config.get('max_train_seconds')
     start_time = time.time()
 
-    while global_step < config['max_steps']:
+    while global_step < max_steps:
         if max_train_seconds is not None and time.time() - start_time > max_train_seconds:
             progress.write(f"Reached max_train_seconds ({max_train_seconds}s), stopping.")
             break
