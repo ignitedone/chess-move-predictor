@@ -211,6 +211,18 @@ def train_model(config: Dict) -> None:
             'optimizer_state_dict': optimizer.state_dict(),
         }, get_weights_file_path(config, global_step))
 
+        # Only preload='latest' is ever used to resume, so old checkpoints
+        # are dead weight — on a long run they silently fill the disk
+        # (each one is tens of MB; Kaggle's /kaggle/working caps at 20GB).
+        model_folder = config['model_folder']
+        model_basename = config['model_basename']
+        checkpoints = sorted(
+            Path(model_folder).glob(f"{model_basename}*"),
+            key = lambda p: int(p.stem.split('_')[-1]),
+        )
+        for old_checkpoint in checkpoints[:-2]:
+            old_checkpoint.unlink()
+
     model.train()
     train_iterator = iter(train_dataloader)
     progress = tqdm(total = max_steps, initial = global_step, desc = 'Training', unit = ' steps')
