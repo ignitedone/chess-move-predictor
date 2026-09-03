@@ -49,12 +49,12 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 ## Stage 5 — Kaggle
 
 - [x] Kaggle account exists (30 GPU-hrs/week, 20 TPU-hrs/week)
-- [ ] New Notebook, set Accelerator to GPU T4 x2 (or P100) before running any cells
-- [ ] Push repo to GitHub (private is fine)
-- [ ] First notebook cell: `!git clone` the repo
-- [ ] Re-run the data pipeline on Kaggle, or attach the cached `.npy` arrays as a Kaggle Dataset
-- [ ] Run training with checkpointing on; "Save Version" after any run whose checkpoints matter
-- [ ] Track GPU-hour usage against the ~30hrs/week budget
+- [x] New Notebook, set Accelerator to GPU T4 x2 (or P100) before running any cells
+- [x] Push repo to GitHub (public — needed for unauthenticated `git clone` from Kaggle's batch/API-pushed kernel runs, since Kaggle Secrets aren't available outside the interactive UI)
+- [x] First notebook cell: `!git clone` the repo
+- [x] Attach the cached `.npy` arrays as a Kaggle Dataset (`chess-move-predictor-tokenized`)
+- [x] Run training with checkpointing on via `kaggle kernels push` (batch execution); first full epoch (128,971 steps) completed in 6h15m, loss 8.6 -> 2.45 — see `REPORT_NOTES.md`
+- [x] Track GPU-hour usage against the ~30hrs/week budget — 10.99h used as of end of epoch 1, 19.01h remaining, quota refreshes 2026-09-05
 
 ## Stage 6 — Report
 
