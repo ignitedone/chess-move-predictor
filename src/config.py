@@ -58,6 +58,13 @@ def get_config() -> Dict[str, Any]:
                 Kaggle session; the real stopping point is decided from
                 actual Kaggle T4 throughput plus remaining time, not
                 fixed in advance. See REPORT_NOTES.md.
+            max_train_seconds (float | None): if set, training also stops
+                once this many wall-clock seconds have elapsed since the
+                start of this call to `train_model`, even if `max_steps`
+                hasn't been reached — whichever limit is hit first wins.
+                Not set here (defaults to None via `config.get`); pass it
+                as a per-run override (e.g. on Kaggle, to bound a session
+                by time before real steps/sec throughput is known).
             checkpoint_every_steps (int): how often (in steps) to save a
                 checkpoint to `model_folder`. Kept short so even a brief
                 calibration run saves at least one checkpoint.
