@@ -24,7 +24,7 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 - [x] Wire into a decoder-only `Transformer` class / `build_transformer()`/`get_model()` factory
 - [x] Sanity check: real `ChessMoveDataset`/`DataLoader` batch through the model — output shape `(4, 128, 5543)` = `[batch, context_size, vocab_size]`, 7,582,631 total params
 - [x] CPU throughput proxy measured (~400-460 tokens/sec, flat across batch size) — see `REPORT_NOTES.md`; confirms training must run on GPU but doesn't settle model size
-- [ ] **Decision: compute feasibility (real numbers).** First action of Stage 5 — measure throughput (tokens/sec) for the current model/batch size on an actual Kaggle T4; estimate steps-per-epoch over ~623M training tokens against the ~30 GPU-hr/week budget; use this to confirm or resize `model_dimension`/`num_layers`/`num_heads` and to decide Stage 3's checkpoint/validation cadence. Record in `REPORT_NOTES.md`.
+- [x] **Decision: compute feasibility (real numbers).** Measured on Kaggle T4: 6.14 steps/s at batch_size=64/context_size=128 ≈ 50,300 tokens/sec ≈ 5.85 hours/epoch. Model size kept as-is (7.58M params); see `REPORT_NOTES.md`.
 
 ## Stage 3 — Training
 
