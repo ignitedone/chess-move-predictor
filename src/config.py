@@ -58,6 +58,11 @@ def get_config() -> Dict[str, Any]:
                 Kaggle session; the real stopping point is decided from
                 actual Kaggle T4 throughput plus remaining time, not
                 fixed in advance. See REPORT_NOTES.md.
+            max_epochs (int | None): if set, overrides `max_steps` with
+                `max_epochs * len(train_dataloader)` — the preferred way
+                to target "train for N full passes over the data" instead
+                of hand-computing a step count. Not set here (opt-in
+                per-run override, same pattern as `max_train_seconds`).
             max_train_seconds (float | None): if set, training also stops
                 once this many wall-clock seconds have elapsed since the
                 start of this call to `train_model`, even if `max_steps`
