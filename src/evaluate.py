@@ -234,6 +234,8 @@ def run_core_metrics(
         model.eval()
 
     phase_boundaries = config['eval_phase_boundaries']
+    start_games_done = accumulator['num_games_done']
+    games_done_this_call = 0
 
     with torch.no_grad():
         for batch in tqdm(dataloader, desc = f"Core metrics ({accumulator['num_games_done']}->{target} games)", unit = ' batches'):
@@ -293,6 +295,14 @@ def run_core_metrics(
                         board.push_san(actual_move_str)
                     except ILLEGAL_MOVE_ERRORS:
                         break
+
+            # Saved after every batch, not just at the end -- a full-test-set
+            # run can take many hours, and this is what makes an interrupted
+            # run resumable from close to where it stopped rather than losing
+            # everything back to the last completed call.
+            games_done_this_call += label.shape[0]
+            accumulator['num_games_done'] = start_games_done + games_done_this_call
+            save_progress(progress_path, accumulator)
 
     accumulator['num_games_done'] = target
     save_progress(progress_path, accumulator)
@@ -459,6 +469,7 @@ def _centipawn_worker(
     finally:
         engine.quit()
 
+    partial['num_games'] = len(move_sequences)
     return partial
 
 
@@ -564,20 +575,30 @@ def run_centipawn_metrics(
     worker_args = [(chunk, stockfish_path, depth, max_loss) for chunk in chunks]
 
     desc = f"Centipawn loss ({accumulator['num_games_done']}->{target} games, {num_workers} workers)"
-    partials = []
-    if num_workers > 1 and len(chunks) > 1:
-        with mp.Pool(processes = min(num_workers, len(chunks))) as pool:
-            for partial in tqdm(pool.imap_unordered(_centipawn_worker, worker_args), total = len(worker_args), desc = desc, unit = ' chunks'):
-                partials.append(partial)
-    else:
-        for args in tqdm(worker_args, desc = desc, unit = ' chunks'):
-            partials.append(_centipawn_worker(args))
+    start_games_done = accumulator['num_games_done']
+    games_done_this_call = 0
 
-    for partial in partials:
+    def _merge_and_save(partial):
+        nonlocal games_done_this_call
         accumulator['num_positions'] += partial['num_positions']
         accumulator['model_loss_sum'] += partial['model_loss_sum']
         accumulator['actual_loss_sum'] += partial['actual_loss_sum']
         accumulator['num_model_illegal'] += partial['num_model_illegal']
+        # Saved after every completed chunk, not just at the end -- this is
+        # the expensive, multi-hour-capable metric, so losing everything to
+        # an interruption partway through would be the same mistake the
+        # training checkpoint bug already taught us not to repeat.
+        games_done_this_call += partial['num_games']
+        accumulator['num_games_done'] = start_games_done + games_done_this_call
+        save_progress(progress_path, accumulator)
+
+    if num_workers > 1 and len(chunks) > 1:
+        with mp.Pool(processes = min(num_workers, len(chunks))) as pool:
+            for partial in tqdm(pool.imap_unordered(_centipawn_worker, worker_args), total = len(worker_args), desc = desc, unit = ' chunks'):
+                _merge_and_save(partial)
+    else:
+        for args in tqdm(worker_args, desc = desc, unit = ' chunks'):
+            _merge_and_save(_centipawn_worker(args))
 
     accumulator['num_games_done'] = target
     save_progress(progress_path, accumulator)
