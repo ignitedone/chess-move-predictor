@@ -49,7 +49,20 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 - [x] Redesigned to a resumable, per-metric "checkpoint" scheme: every metric processes a prefix of one fixed seeded game order and saves progress.json, so growing the sample size later only evaluates new games and merges rather than re-running
 - [x] Added free-tier metrics: top-3/top-5 accuracy, perplexity, accuracy by game phase, accuracy by move type
 - [x] Added Stockfish-based centipawn loss (model move vs. reference vs. actual human move), parallelized across worker processes; Stockfish 18 installed locally
-- [ ] Run the real, larger-scale evaluation pass (core metrics at a large sample or full test set; centipawn loss at whatever sample size time allows) once epoch 3 (or later) training is done
+- [x] **Decision: per-epoch evaluation scope.** Training continues through epoch 5 (see Stage 5). Rather than full-test-set core metrics on every epoch (~8-12h each under CPU contention with a concurrent centipawn run -- 5x that is more than the remaining time budget justifies), the scope is:
+  - Epochs 1-4: core metrics on **half the test set** (229,102 of 458,204 games) + centipawn loss on 2,000 games each, giving a consistent, comparable progression table across epochs at a real but bounded cost.
+  - Epoch 5 (final/best model): core metrics on the **full test set** (458,204 games) as the headline result, + centipawn loss on 2,000 games initially, with room to grow the centipawn sample further if time allows once everything else is done (the resumable per-metric design makes that a pure extension, not a redo).
+  - Both metrics use the same fixed seeded game order (`get_canonical_game_order`) throughout, so every epoch's sample is a strict prefix of the next -- comparisons across epochs are apples-to-apples, and any sample can be grown later without re-evaluating games already covered.
+  - [ ] Epoch 1 (step 128971): core metrics @ 229,102 games -- in progress
+  - [ ] Epoch 1 (step 128971): centipawn @ 2,000 games -- in progress
+  - [ ] Epoch 2 (step 257942): core metrics @ 229,102 games
+  - [ ] Epoch 2 (step 257942): centipawn @ 2,000 games
+  - [ ] Epoch 3: core metrics @ 229,102 games (once training completes)
+  - [ ] Epoch 3: centipawn @ 2,000 games
+  - [ ] Epoch 4: core metrics @ 229,102 games (once training completes)
+  - [ ] Epoch 4: centipawn @ 2,000 games
+  - [ ] Epoch 5 (final): core metrics @ 458,204 games (full test set)
+  - [ ] Epoch 5 (final): centipawn @ 2,000 games, extend further if time allows
 
 ## Stage 5 — Kaggle
 
@@ -61,6 +74,10 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 - [x] Run training with checkpointing on via `kaggle kernels push` (batch execution); epoch 1 (128,971 steps) in 6h15m, loss 8.6 -> 2.45; epoch 2 (128,971 more steps) in 6h41m, loss -> 2.315 — see `REPORT_NOTES.md`
 - [x] Checkpoints backed up 4-ways per epoch (local + local archive + Kaggle working dataset + Kaggle permanent-archive dataset); TensorBoard `runs/` data archived per epoch under `runs_archive/epoch<N>/` immediately after each run, before pushing the next version
 - [x] Track GPU-hour usage against the ~30hrs/week budget — 10.99h used as of end of epoch 1, 19.01h remaining, quota refreshes 2026-09-05
+- [x] **Decision: train through epoch 5, then stop.** Diminishing per-epoch loss gains are expected (epoch 1->2 already smaller than epoch 0->1 would have been) but ample GPU quota remains; epoch 5 is the planned final model for the report's headline evaluation.
+  - [x] Epoch 3 — in progress (started from step 257942, target step 386913)
+  - [ ] Epoch 4 — queued, launch once epoch 3 completes and its checkpoint/TensorBoard data are secured
+  - [ ] Epoch 5 (final) — queued, launch once epoch 4 completes and its checkpoint/TensorBoard data are secured
 
 ## Stage 6 — Report
 
