@@ -1,0 +1,7 @@
+{
+  "num_games_done": 2000,
+  "num_positions": 151382,
+  "model_loss_sum": 19668367.0,
+  "actual_loss_sum": 8875759.0,
+  "num_model_illegal": 6367
+}
