@@ -54,7 +54,8 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 - [x] Push repo to GitHub (public — needed for unauthenticated `git clone` from Kaggle's batch/API-pushed kernel runs, since Kaggle Secrets aren't available outside the interactive UI)
 - [x] First notebook cell: `!git clone` the repo
 - [x] Attach the cached `.npy` arrays as a Kaggle Dataset (`chess-move-predictor-tokenized`)
-- [x] Run training with checkpointing on via `kaggle kernels push` (batch execution); first full epoch (128,971 steps) completed in 6h15m, loss 8.6 -> 2.45 — see `REPORT_NOTES.md`
+- [x] Run training with checkpointing on via `kaggle kernels push` (batch execution); epoch 1 (128,971 steps) in 6h15m, loss 8.6 -> 2.45; epoch 2 (128,971 more steps) in 6h41m, loss -> 2.315 — see `REPORT_NOTES.md`
+- [x] Checkpoints backed up 4-ways per epoch (local + local archive + Kaggle working dataset + Kaggle permanent-archive dataset); TensorBoard `runs/` data archived per epoch under `runs_archive/epoch<N>/` immediately after each run, before pushing the next version
 - [x] Track GPU-hour usage against the ~30hrs/week budget — 10.99h used as of end of epoch 1, 19.01h remaining, quota refreshes 2026-09-05
 
 ## Stage 6 — Report
