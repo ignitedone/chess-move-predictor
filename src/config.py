@@ -85,8 +85,15 @@ def get_config() -> Dict[str, Any]:
                 (str) to resume from that checkpoint, or `None` to start
                 fresh.
             experiment_name (str): TensorBoard log directory.
-
-        More fields will be added here as evaluate.py is implemented.
+            eval_num_games (int | None): number of test-split games to
+                sample for evaluate.py. None evaluates the full test
+                split. Sampling is inference-only (no backward pass) and
+                cheap relative to training, but the legal-move-rate
+                metric drives a real python-chess board per game
+                sequentially on CPU, so a full-test-split run is still
+                far slower than a single forward pass would suggest.
+            eval_results_dir (str): folder where evaluate.py saves its
+                metrics JSON and example predictions.
     """
     return {
         "seed": 561,
@@ -116,6 +123,8 @@ def get_config() -> Dict[str, Any]:
         "model_basename": "chess_transformer_",
         "preload": "latest",
         "experiment_name": "runs/chess_transformer",
+        "eval_num_games": 10_000,
+        "eval_results_dir": "eval_results",
     }
 
 
