@@ -77,8 +77,9 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 - [x] Track GPU-hour usage against the ~30hrs/week budget — 10.99h used as of end of epoch 1, 19.01h remaining, quota refreshes 2026-09-05
 - [x] **Decision: train through epoch 5, then stop.** Diminishing per-epoch loss gains are expected (epoch 1->2 already smaller than epoch 0->1 would have been) but ample GPU quota remains; epoch 5 is the planned final model for the report's headline evaluation.
   - [x] Epoch 3 — complete: 386,913/386,913 steps in 6h37m38s, loss -> 2.325 (val loss 2.104 -> 2.043, min 2.020); checkpoint + TensorBoard data secured
-  - [ ] Epoch 4 — pushing now that epoch 3 is secured (target step 515,884); quota at push time: 5.60h remaining of this week's 30h, resets 2026-09-05T00:00:00 (~5h from push) -- expected to run past the reset, which is fine given checkpointing
-  - [ ] Epoch 5 (final) — queued, launch once epoch 4 completes and its checkpoint/TensorBoard data are secured (may be skipped depending on how the evaluation backlog looks by then)
+  - [x] Epoch 4 — complete: 515,884/515,884 steps, ~6h20m wall time, loss -> ~2.24 (val loss 2.040 -> 2.027, min 2.005 at step 449,800); kernel kept running past the weekly quota exhaustion (30.33h/30h used) since quota only blocks *new* session starts, not an in-flight one; checkpoint + TensorBoard data secured (4-way backup + runs_archive/epoch4/)
+  - [x] **Decision confirmed: epoch 5 will be trained** (not skipped). Push as soon as the weekly GPU quota resets (~2026-09-05T00:00:00Z) and epoch 4's checkpoint/TensorBoard data are secured.
+  - [ ] Epoch 5 (final) — queued, launch once quota resets and epoch 4 is secured
 
 ## Stage 6 — Report
 
