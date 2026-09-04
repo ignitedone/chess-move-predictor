@@ -6,3 +6,4 @@ tokenizers
 torch
 tqdm
 tensorboard
+chess
