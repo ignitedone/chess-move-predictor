@@ -1,3 +1,5 @@
+import os
+
 from pathlib import Path
 from typing import Dict, Any
 
@@ -94,6 +96,48 @@ def get_config() -> Dict[str, Any]:
                 far slower than a single forward pass would suggest.
             eval_results_dir (str): folder where evaluate.py saves its
                 metrics JSON and example predictions.
+            eval_phase_boundaries (Tuple[int, int]): ply-index cutoffs
+                (opening_end, middlegame_end) used to bucket next-move
+                accuracy by game phase in evaluate.py. A move at ply i
+                is "opening" if i < opening_end, "middlegame" if
+                opening_end <= i < middlegame_end, else "endgame".
+            centipawn_num_games (int): default number of games for the
+                Stockfish-based centipawn-loss metric (see
+                `run_centipawn_metrics` in evaluate.py). 0 disables it
+                by default -- it's opt-in since it needs a separately
+                installed Stockfish binary and is much slower than the
+                other metrics (multiple engine calls per move).
+            stockfish_path (str | None): path to a Stockfish executable.
+                Required only for the centipawn-loss metric. Install via
+                e.g. `winget install Stockfish.Stockfish` on Windows or
+                https://stockfishchess.org/download/, then point this at
+                the resulting binary.
+            stockfish_depth (int): Stockfish search depth used for every
+                position evaluated by the centipawn-loss metric. Higher
+                is a more reliable "almost ideal" reference but much
+                slower; this is the main speed/quality knob for that
+                metric.
+            centipawn_num_workers (int): number of Stockfish processes
+                run in parallel for the centipawn-loss metric. Each
+                worker gets its own engine subprocess and a slice of
+                the games being evaluated -- since each position is an
+                independent, shallow (depth=`stockfish_depth`) analysis,
+                this scales close to linearly with core count, unlike
+                deepening a single search's own internal threading.
+                Defaults to half the machine's logical CPU count, a
+                rough proxy for physical core count on hyperthreaded
+                CPUs -- Stockfish search is CPU-bound and doesn't
+                benefit much from hyperthreading, so oversubscribing
+                past physical cores mostly adds contention rather than
+                throughput (measured: ~3.3x speedup from 7 workers on a
+                4-physical/8-logical-core CPU, not ~7x).
+            centipawn_max_loss (int): clip value (centipawns) applied to
+                any single move's centipawn loss, including an illegal
+                model-proposed move (which gets exactly this value) --
+                matches the convention used in prior chess-LM evaluation
+                work (e.g. Karvonen's Chess-GPT) so an unplayable move
+                is scored as "at least as bad as the worst clipped
+                blunder" rather than excluded from the average.
     """
     return {
         "seed": 561,
@@ -125,6 +169,12 @@ def get_config() -> Dict[str, Any]:
         "experiment_name": "runs/chess_transformer",
         "eval_num_games": 10_000,
         "eval_results_dir": "eval_results",
+        "eval_phase_boundaries": (20, 60),
+        "centipawn_num_games": 0,
+        "stockfish_path": None,
+        "stockfish_depth": 10,
+        "centipawn_num_workers": max(1, (os.cpu_count() or 2) // 2),
+        "centipawn_max_loss": 1000,
     }
 
 
