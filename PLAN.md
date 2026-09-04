@@ -45,7 +45,11 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 - [x] Metric 2: legal-move rate, via `board.parse_san()` against the real game's board state at each position
 - [x] Metric 3: probability assigned to the move actually played (`exp(log_prob)`)
 - [x] Save metrics + example predictions to disk, namespaced by checkpoint step (`eval_results/step_<N>/`) so evaluating multiple checkpoints never overwrites earlier results
-- [ ] Run for real against epoch 1 (and later epoch 2+) checkpoints once reviewed together
+- [x] Quick real checks (500 games) against epoch 1 and epoch 2 checkpoints: accuracy 40.0%->41.5%, legal-rate 94.9%->95.7%, mean probability 26.6%->27.9%
+- [x] Redesigned to a resumable, per-metric "checkpoint" scheme: every metric processes a prefix of one fixed seeded game order and saves progress.json, so growing the sample size later only evaluates new games and merges rather than re-running
+- [x] Added free-tier metrics: top-3/top-5 accuracy, perplexity, accuracy by game phase, accuracy by move type
+- [x] Added Stockfish-based centipawn loss (model move vs. reference vs. actual human move), parallelized across worker processes; Stockfish 18 installed locally
+- [ ] Run the real, larger-scale evaluation pass (core metrics at a large sample or full test set; centipawn loss at whatever sample size time allows) once epoch 3 (or later) training is done
 
 ## Stage 5 — Kaggle
 
