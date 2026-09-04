@@ -1,0 +1,22 @@
+{
+  "num_games": 229102,
+  "num_positions": 17080760,
+  "next_move_accuracy": 0.41679088049946256,
+  "top3_accuracy": 0.6780268559478618,
+  "top5_accuracy": 0.7845122231095103,
+  "legal_move_rate": 0.9608616361332868,
+  "mean_actual_move_probability": 0.28065233791841004,
+  "perplexity": 7.622515718890928,
+  "accuracy_by_phase": {
+    "opening": 0.5007151836299989,
+    "middlegame": 0.39458664273859095,
+    "endgame": 0.3701959958484379
+  },
+  "accuracy_by_move_type": {
+    "capture": 0.6383722081809482,
+    "castling": 0.788617247071771,
+    "promotion": 0.7775946065646375,
+    "normal": 0.33495102893810846
+  },
+  "checkpoint": "weights/chess_transformer_386913.pt"
+}
