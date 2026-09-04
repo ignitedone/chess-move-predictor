@@ -1,0 +1,10 @@
+{
+  "num_games": 2000,
+  "num_positions": 151382,
+  "mean_model_centipawn_loss": 124.82715250161843,
+  "mean_actual_move_centipawn_loss": 58.78043624737419,
+  "model_illegal_move_rate_in_sample": 0.03876286480559115,
+  "checkpoint": "weights/chess_transformer_386913.pt",
+  "stockfish_depth": 10,
+  "num_workers": 4
+}

@@ -58,7 +58,7 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - [x] Epoch 2 (step 257942): core metrics @ 229,102 games -- accuracy 41.1%, top3 67.0%, top5 77.6%, legal-rate 95.8%, mean prob 27.6%, perplexity 7.92
   - [x] Epoch 2 (step 257942): centipawn @ 2,000 games -- model 129.9cp / human 58.6cp loss, 4.21% illegal-in-sample
   - [ ] Epoch 3 (step 386913): core metrics @ 229,102 games -- in progress
-  - [ ] Epoch 3 (step 386913): centipawn @ 2,000 games -- in progress
+  - [x] Epoch 3 (step 386913): centipawn @ 2,000 games -- model 124.8cp / human 58.8cp loss, 3.88% illegal-in-sample
   - [ ] Epoch 4: core metrics @ 229,102 games (once training completes)
   - [ ] Epoch 4: centipawn @ 2,000 games
   - [ ] Epoch 5 (final, if not skipped): core metrics @ 458,204 games (full test set)
