@@ -39,12 +39,13 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 
 ## Stage 4 — Evaluation
 
-- [ ] Add `python-chess` to `requirements.txt`
-- [ ] `src/evaluate.py`: load a checkpoint + tokenizer, run against the test split
-- [ ] Metric 1: next-move accuracy (`argmax(model_output)` vs. actual move)
-- [ ] Metric 2: legal-move rate, via `chess.Board().legal_moves` replay
-- [ ] Metric 3: probability assigned to the move actually played
-- [ ] Save metrics + example predictions to disk
+- [x] Add `chess` (python-chess) to `requirements.txt`
+- [x] `src/evaluate.py`: load a checkpoint + tokenizer, run against a sample (or all) of the test split
+- [x] Metric 1: next-move accuracy (`argmax(model_output)` vs. actual move, excluding the [EOS]-target position)
+- [x] Metric 2: legal-move rate, via `board.parse_san()` against the real game's board state at each position
+- [x] Metric 3: probability assigned to the move actually played (`exp(log_prob)`)
+- [x] Save metrics + example predictions to disk, namespaced by checkpoint step (`eval_results/step_<N>/`) so evaluating multiple checkpoints never overwrites earlier results
+- [ ] Run for real against epoch 1 (and later epoch 2+) checkpoints once reviewed together
 
 ## Stage 5 — Kaggle
 
