@@ -53,16 +53,17 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - Epochs 1-4: core metrics on **half the test set** (229,102 of 458,204 games) + centipawn loss on 2,000 games each, giving a consistent, comparable progression table across epochs at a real but bounded cost.
   - Epoch 5 (final/best model): core metrics on the **full test set** (458,204 games) as the headline result, + centipawn loss on 2,000 games initially, with room to grow the centipawn sample further if time allows once everything else is done (the resumable per-metric design makes that a pure extension, not a redo).
   - Both metrics use the same fixed seeded game order (`get_canonical_game_order`) throughout, so every epoch's sample is a strict prefix of the next -- comparisons across epochs are apples-to-apples, and any sample can be grown later without re-evaluating games already covered.
-  - [ ] Epoch 1 (step 128971): core metrics @ 229,102 games -- in progress
-  - [ ] Epoch 1 (step 128971): centipawn @ 2,000 games -- in progress
-  - [ ] Epoch 2 (step 257942): core metrics @ 229,102 games
-  - [ ] Epoch 2 (step 257942): centipawn @ 2,000 games
-  - [ ] Epoch 3: core metrics @ 229,102 games (once training completes)
-  - [ ] Epoch 3: centipawn @ 2,000 games
+  - [ ] Epoch 1 (step 128971): core metrics @ 229,102 games -- in progress (~92%+)
+  - [x] Epoch 1 (step 128971): centipawn @ 2,000 games -- model 142.2cp / human 58.8cp loss, 5.18% illegal-in-sample
+  - [ ] Epoch 2 (step 257942): core metrics @ 229,102 games -- in progress
+  - [x] Epoch 2 (step 257942): centipawn @ 2,000 games -- model 129.9cp / human 58.6cp loss, 4.21% illegal-in-sample
+  - [ ] Epoch 3 (step 386913): core metrics @ 229,102 games
+  - [ ] Epoch 3 (step 386913): centipawn @ 2,000 games
   - [ ] Epoch 4: core metrics @ 229,102 games (once training completes)
   - [ ] Epoch 4: centipawn @ 2,000 games
-  - [ ] Epoch 5 (final): core metrics @ 458,204 games (full test set)
-  - [ ] Epoch 5 (final): centipawn @ 2,000 games, extend further if time allows
+  - [ ] Epoch 5 (final, if not skipped): core metrics @ 458,204 games (full test set)
+  - [ ] Epoch 5 (final, if not skipped): centipawn @ 2,000 games, extend further if time allows
+  - [x] **Decision: Stockfish search depth = 10 for every epoch's centipawn evaluation** (not 8) — the real epoch-1 run picked up `config.py`'s default of 10 before depth=8 was settled on for the dry runs; since depth 10 is a strictly better reference and the numbers were already computed, kept as the standard for consistency rather than redone at 8.
 
 ## Stage 5 — Kaggle
 
@@ -75,9 +76,9 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
 - [x] Checkpoints backed up 4-ways per epoch (local + local archive + Kaggle working dataset + Kaggle permanent-archive dataset); TensorBoard `runs/` data archived per epoch under `runs_archive/epoch<N>/` immediately after each run, before pushing the next version
 - [x] Track GPU-hour usage against the ~30hrs/week budget — 10.99h used as of end of epoch 1, 19.01h remaining, quota refreshes 2026-09-05
 - [x] **Decision: train through epoch 5, then stop.** Diminishing per-epoch loss gains are expected (epoch 1->2 already smaller than epoch 0->1 would have been) but ample GPU quota remains; epoch 5 is the planned final model for the report's headline evaluation.
-  - [x] Epoch 3 — in progress (started from step 257942, target step 386913)
-  - [ ] Epoch 4 — queued, launch once epoch 3 completes and its checkpoint/TensorBoard data are secured
-  - [ ] Epoch 5 (final) — queued, launch once epoch 4 completes and its checkpoint/TensorBoard data are secured
+  - [x] Epoch 3 — complete: 386,913/386,913 steps in 6h37m38s, loss -> 2.325 (val loss 2.104 -> 2.043, min 2.020); checkpoint + TensorBoard data secured
+  - [ ] Epoch 4 — pushing now that epoch 3 is secured (target step 515,884); quota at push time: 5.60h remaining of this week's 30h, resets 2026-09-05T00:00:00 (~5h from push) -- expected to run past the reset, which is fine given checkpointing
+  - [ ] Epoch 5 (final) — queued, launch once epoch 4 completes and its checkpoint/TensorBoard data are secured (may be skipped depending on how the evaluation backlog looks by then)
 
 ## Stage 6 — Report
 
