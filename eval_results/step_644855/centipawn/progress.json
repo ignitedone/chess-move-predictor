@@ -1,7 +1,7 @@
 {
-  "num_games_done": 1000,
-  "num_positions": 75451,
-  "model_loss_sum": 9074855.0,
-  "actual_loss_sum": 4404042.0,
-  "num_model_illegal": 2663
+  "num_games_done": 2000,
+  "num_positions": 151382,
+  "model_loss_sum": 18244752.0,
+  "actual_loss_sum": 8886598.0,
+  "num_model_illegal": 5396
 }

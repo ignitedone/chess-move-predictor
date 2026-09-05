@@ -63,7 +63,7 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - [x] Epoch 4: centipawn @ 2,000 games -- model 121.9cp / human 58.6cp loss, 3.69% illegal-in-sample
   - [x] **Decision revised (2026-09-05): epoch 5 core metrics run half-scale FIRST, full-scale later.** Originally planned as full-test-set-only; changed so epoch 5 gets the same 229,102-game half-scale run as epochs 1-4 as an immediate, comparable data point, with the full 458,204-game run as an explicit separate follow-up once time allows -- the two are tracked as distinct entries below, never conflated.
   - [ ] Epoch 5 (final): core metrics @ 229,102 games (half test set, same as epochs 1-4) -- in progress (auto-launched by `overnight_epoch5.py` immediately after epoch 5's checkpoint was secured)
-  - [ ] Epoch 5 (final): centipawn @ 2,000 games -- in progress (auto-launched alongside the above)
+  - [x] Epoch 5 (final): centipawn @ 2,000 games -- model 120.52cp / human 58.70cp loss, 3.56% illegal-in-sample (verified self-consistent)
   - [ ] Epoch 5 (final): core metrics @ 458,204 games (full test set) -- deferred follow-up, not yet started
   - [ ] Epoch 5 (final): centipawn extended beyond 2,000 games -- deferred follow-up, not yet started
   - Epochs 1-4 centipawn extended from 2,000 -> 5,000 games each for statistical robustness (tracked separately from each epoch's original 2,000-game baseline above; managed by the fully-automated overnight queue in `master_night_queue.py`):
