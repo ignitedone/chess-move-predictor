@@ -53,16 +53,20 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - Epochs 1-4: core metrics on **half the test set** (229,102 of 458,204 games) + centipawn loss on 2,000 games each, giving a consistent, comparable progression table across epochs at a real but bounded cost.
   - Epoch 5 (final/best model): core metrics on the **full test set** (458,204 games) as the headline result, + centipawn loss on 2,000 games initially, with room to grow the centipawn sample further if time allows once everything else is done (the resumable per-metric design makes that a pure extension, not a redo).
   - Both metrics use the same fixed seeded game order (`get_canonical_game_order`) throughout, so every epoch's sample is a strict prefix of the next -- comparisons across epochs are apples-to-apples, and any sample can be grown later without re-evaluating games already covered.
-  - [ ] Epoch 1 (step 128971): core metrics @ 229,102 games -- in progress (~92%+)
+  - [x] Epoch 1 (step 128971): core metrics @ 229,102 games -- accuracy 39.68%, top3 65.01%, top5 75.66%, legal-rate 94.77%, mean prob 26.31%, perplexity 8.70
   - [x] Epoch 1 (step 128971): centipawn @ 2,000 games -- model 142.2cp / human 58.8cp loss, 5.18% illegal-in-sample
   - [x] Epoch 2 (step 257942): core metrics @ 229,102 games -- accuracy 41.1%, top3 67.0%, top5 77.6%, legal-rate 95.8%, mean prob 27.6%, perplexity 7.92
   - [x] Epoch 2 (step 257942): centipawn @ 2,000 games -- model 129.9cp / human 58.6cp loss, 4.21% illegal-in-sample
   - [x] Epoch 3 (step 386913): core metrics @ 229,102 games -- accuracy 41.68%, top3 67.80%, top5 78.45%, legal-rate 96.09%, mean prob 28.07%, perplexity 7.62
   - [x] Epoch 3 (step 386913): centipawn @ 2,000 games -- model 124.8cp / human 58.8cp loss, 3.88% illegal-in-sample
-  - [ ] Epoch 4: core metrics @ 229,102 games (once training completes)
-  - [ ] Epoch 4: centipawn @ 2,000 games
-  - [ ] Epoch 5 (final, if not skipped): core metrics @ 458,204 games (full test set)
-  - [ ] Epoch 5 (final, if not skipped): centipawn @ 2,000 games, extend further if time allows
+  - [ ] Epoch 4: core metrics @ 229,102 games -- in progress overnight (2026-09-05)
+  - [ ] Epoch 4: centipawn @ 2,000 games -- in progress overnight (2026-09-05)
+  - [x] **Decision revised (2026-09-05): epoch 5 core metrics run half-scale FIRST, full-scale later.** Originally planned as full-test-set-only; changed so epoch 5 gets the same 229,102-game half-scale run as epochs 1-4 as an immediate, comparable data point, with the full 458,204-game run as an explicit separate follow-up once time allows -- the two are tracked as distinct entries below, never conflated.
+  - [ ] Epoch 5 (final): core metrics @ 229,102 games (half test set, same as epochs 1-4) -- launched automatically once epoch 5 training completes and its checkpoint is secured (overnight pipeline, 2026-09-05)
+  - [ ] Epoch 5 (final): centipawn @ 2,000 games -- launched automatically alongside the above
+  - [ ] Epoch 5 (final): core metrics @ 458,204 games (full test set) -- deferred follow-up, not yet started
+  - [ ] Epoch 5 (final): centipawn extended beyond 2,000 games -- deferred follow-up, not yet started
+  - [ ] Epochs 1-4: centipawn extended from 2,000 -> 5,000 games each for statistical robustness -- in progress overnight (2026-09-05); epoch 1 near-complete, epochs 2/3/4 queued/in-progress, tracked as separate result entries from each epoch's original 2,000-game baseline above
   - [x] **Decision: Stockfish search depth = 10 for every epoch's centipawn evaluation** (not 8) — the real epoch-1 run picked up `config.py`'s default of 10 before depth=8 was settled on for the dry runs; since depth 10 is a strictly better reference and the numbers were already computed, kept as the standard for consistency rather than redone at 8.
 
 ## Stage 5 — Kaggle
