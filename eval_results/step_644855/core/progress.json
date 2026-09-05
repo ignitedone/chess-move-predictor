@@ -1,0 +1,42 @@
+{
+  "num_games_done": 28416,
+  "num_positions": 2118337,
+  "num_correct": 896478,
+  "num_correct_top3": 1453995,
+  "num_correct_top5": 1678655,
+  "num_legal": 2042169,
+  "probability_sum": 606640.678519753,
+  "neg_log_likelihood_sum": 4221747.579650465,
+  "phase_counts": {
+    "opening": [
+      286335,
+      568320
+    ],
+    "middlegame": [
+      402881,
+      1004573
+    ],
+    "endgame": [
+      207262,
+      545444
+    ]
+  },
+  "movetype_counts": {
+    "capture": [
+      320521,
+      490779
+    ],
+    "castling": [
+      38383,
+      48939
+    ],
+    "promotion": [
+      4089,
+      5087
+    ],
+    "normal": [
+      533485,
+      1573532
+    ]
+  }
+}

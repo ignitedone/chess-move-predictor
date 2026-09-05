@@ -62,15 +62,15 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - [x] Epoch 4: core metrics @ 229,102 games -- accuracy 42.03%, top3 68.25%, top5 78.89%, legal-rate 96.25%, mean prob 28.43%, perplexity 7.46
   - [x] Epoch 4: centipawn @ 2,000 games -- model 121.9cp / human 58.6cp loss, 3.69% illegal-in-sample
   - [x] **Decision revised (2026-09-05): epoch 5 core metrics run half-scale FIRST, full-scale later.** Originally planned as full-test-set-only; changed so epoch 5 gets the same 229,102-game half-scale run as epochs 1-4 as an immediate, comparable data point, with the full 458,204-game run as an explicit separate follow-up once time allows -- the two are tracked as distinct entries below, never conflated.
-  - [ ] Epoch 5 (final): core metrics @ 229,102 games (half test set, same as epochs 1-4) -- launched automatically once epoch 5 training completes and its checkpoint is secured (overnight pipeline, 2026-09-05)
-  - [ ] Epoch 5 (final): centipawn @ 2,000 games -- launched automatically alongside the above
+  - [ ] Epoch 5 (final): core metrics @ 229,102 games (half test set, same as epochs 1-4) -- in progress (auto-launched by `overnight_epoch5.py` immediately after epoch 5's checkpoint was secured)
+  - [ ] Epoch 5 (final): centipawn @ 2,000 games -- in progress (auto-launched alongside the above)
   - [ ] Epoch 5 (final): core metrics @ 458,204 games (full test set) -- deferred follow-up, not yet started
   - [ ] Epoch 5 (final): centipawn extended beyond 2,000 games -- deferred follow-up, not yet started
   - Epochs 1-4 centipawn extended from 2,000 -> 5,000 games each for statistical robustness (tracked separately from each epoch's original 2,000-game baseline above; managed by the fully-automated overnight queue in `master_night_queue.py`):
     - [x] Epoch 1 (step 128971) @ 5,000 games -- model 142.21cp / human 58.16cp loss, 5.19% illegal-in-sample (essentially unchanged from the 2,000-game baseline: 142.2cp/58.8cp/5.18% -- confirms the smaller sample was already representative). Note: an earlier commit of this result had a transient data-integrity issue (a leftover process from an earlier orphaned-job incident wrote an inconsistent intermediate value); the orchestrator's clean completion overwrote it with this self-consistent result (metrics.json and progress.json now agree exactly on num_positions).
     - [x] Epoch 2 (step 257942) @ 5,000 games -- model 129.68cp / human 58.15cp loss, 4.21% illegal-in-sample (verified self-consistent: metrics.json and progress.json agree exactly on num_positions)
-    - [ ] Epoch 3 (step 386913) @ 5,000 games -- queued (partial progress in flight: 2,752/5,000 from an earlier interrupted attempt, safely resumable)
-    - [ ] Epoch 4 (step 515884) @ 5,000 games -- queued
+    - [x] Epoch 3 (step 386913) @ 5,000 games -- model 124.70cp / human 58.09cp loss, 3.87% illegal-in-sample (verified self-consistent)
+    - [x] Epoch 4 (step 515884) @ 5,000 games -- model 122.01cp / human 58.21cp loss, 3.68% illegal-in-sample (verified self-consistent)
   - [x] **Decision: Stockfish search depth = 10 for every epoch's centipawn evaluation** (not 8) — the real epoch-1 run picked up `config.py`'s default of 10 before depth=8 was settled on for the dry runs; since depth 10 is a strictly better reference and the numbers were already computed, kept as the standard for consistency rather than redone at 8.
 
 ## Stage 5 — Kaggle
@@ -88,6 +88,7 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - [x] Epoch 4 — complete: 515,884/515,884 steps, ~6h20m wall time, loss -> ~2.24 (val loss 2.040 -> 2.027, min 2.005 at step 449,800); kernel kept running past the weekly quota exhaustion (30.33h/30h used) since quota only blocks *new* session starts, not an in-flight one; checkpoint + TensorBoard data secured (4-way backup + runs_archive/epoch4/)
   - [x] **Decision confirmed: epoch 5 will be trained** (not skipped). Push as soon as the weekly GPU quota resets (~2026-09-05T00:00:00Z) and epoch 4's checkpoint/TensorBoard data are secured.
   - [x] Epoch 5 (final) — pushed as kernel version 10 once quota reset (0.00h/30h used, confirmed via `kaggle quota`) and epoch 4's checkpoint was already secured; target step 644,855 (515,884 + 128,971); notebook's `config["max_epochs"]` updated 4->5, `max_train_seconds` kept at 8h
+  - [x] Epoch 5 — complete: 644,855/644,855 steps (ran the full 128,971 steps, no early stop via the 8h cap), val loss 2.034 -> 2.006 (min 1.986 at step 630,400); checkpoint + TensorBoard data secured fully automatically overnight via `overnight_epoch5.py` (4-way backup + `runs_archive/epoch5/`), which also auto-launched epoch 5's baseline evaluation immediately after
 
 ## Stage 6 — Report
 
