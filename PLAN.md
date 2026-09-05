@@ -79,7 +79,7 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - [x] Epoch 3 — complete: 386,913/386,913 steps in 6h37m38s, loss -> 2.325 (val loss 2.104 -> 2.043, min 2.020); checkpoint + TensorBoard data secured
   - [x] Epoch 4 — complete: 515,884/515,884 steps, ~6h20m wall time, loss -> ~2.24 (val loss 2.040 -> 2.027, min 2.005 at step 449,800); kernel kept running past the weekly quota exhaustion (30.33h/30h used) since quota only blocks *new* session starts, not an in-flight one; checkpoint + TensorBoard data secured (4-way backup + runs_archive/epoch4/)
   - [x] **Decision confirmed: epoch 5 will be trained** (not skipped). Push as soon as the weekly GPU quota resets (~2026-09-05T00:00:00Z) and epoch 4's checkpoint/TensorBoard data are secured.
-  - [ ] Epoch 5 (final) — queued, launch once quota resets and epoch 4 is secured
+  - [x] Epoch 5 (final) — pushed as kernel version 10 once quota reset (0.00h/30h used, confirmed via `kaggle quota`) and epoch 4's checkpoint was already secured; target step 644,855 (515,884 + 128,971); notebook's `config["max_epochs"]` updated 4->5, `max_train_seconds` kept at 8h
 
 ## Stage 6 — Report
 
