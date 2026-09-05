@@ -62,7 +62,7 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - [x] Epoch 4: core metrics @ 229,102 games -- accuracy 42.03%, top3 68.25%, top5 78.89%, legal-rate 96.25%, mean prob 28.43%, perplexity 7.46
   - [x] Epoch 4: centipawn @ 2,000 games -- model 121.9cp / human 58.6cp loss, 3.69% illegal-in-sample
   - [x] **Decision revised (2026-09-05): epoch 5 core metrics run half-scale FIRST, full-scale later.** Originally planned as full-test-set-only; changed so epoch 5 gets the same 229,102-game half-scale run as epochs 1-4 as an immediate, comparable data point, with the full 458,204-game run as an explicit separate follow-up once time allows -- the two are tracked as distinct entries below, never conflated.
-  - [ ] Epoch 5 (final): core metrics @ 229,102 games (half test set, same as epochs 1-4) -- in progress (auto-launched by `overnight_epoch5.py` immediately after epoch 5's checkpoint was secured)
+  - [x] Epoch 5 (final): core metrics @ 229,102 games (half test set, same as epochs 1-4) -- accuracy 42.36%, top3 68.67%, top5 79.28%, legal-rate 96.37%, mean prob 28.65%, perplexity 7.33 (snapshot preserved separately at `eval_results/step_644855/core/metrics_half_229102.json` before the full-scale extension overwrites the live `metrics.json`)
   - [x] Epoch 5 (final): centipawn @ 2,000 games -- model 120.52cp / human 58.70cp loss, 3.56% illegal-in-sample (verified self-consistent)
   - [ ] Epoch 5 (final): core metrics @ 458,204 games (full test set) -- deferred follow-up, not yet started
   - [ ] Epoch 5 (final): centipawn extended beyond 2,000 games -- deferred follow-up, not yet started
