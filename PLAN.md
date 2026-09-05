@@ -66,7 +66,11 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - [ ] Epoch 5 (final): centipawn @ 2,000 games -- launched automatically alongside the above
   - [ ] Epoch 5 (final): core metrics @ 458,204 games (full test set) -- deferred follow-up, not yet started
   - [ ] Epoch 5 (final): centipawn extended beyond 2,000 games -- deferred follow-up, not yet started
-  - [ ] Epochs 1-4: centipawn extended from 2,000 -> 5,000 games each for statistical robustness -- in progress overnight (2026-09-05); epoch 1 near-complete, epochs 2/3/4 queued/in-progress, tracked as separate result entries from each epoch's original 2,000-game baseline above
+  - Epochs 1-4 centipawn extended from 2,000 -> 5,000 games each for statistical robustness (tracked separately from each epoch's original 2,000-game baseline above; managed by the fully-automated overnight queue in `master_night_queue.py`):
+    - [x] Epoch 1 (step 128971) @ 5,000 games -- model 142.17cp / human 58.21cp loss, 5.19% illegal-in-sample (essentially unchanged from the 2,000-game baseline: 142.2cp/58.8cp/5.18% -- confirms the smaller sample was already representative)
+    - [ ] Epoch 2 (step 257942) @ 5,000 games -- queued
+    - [ ] Epoch 3 (step 386913) @ 5,000 games -- queued (partial progress in flight: 2,752/5,000 from an earlier interrupted attempt, safely resumable)
+    - [ ] Epoch 4 (step 515884) @ 5,000 games -- queued
   - [x] **Decision: Stockfish search depth = 10 for every epoch's centipawn evaluation** (not 8) — the real epoch-1 run picked up `config.py`'s default of 10 before depth=8 was settled on for the dry runs; since depth 10 is a strictly better reference and the numbers were already computed, kept as the standard for consistency rather than redone at 8.
 
 ## Stage 5 — Kaggle
