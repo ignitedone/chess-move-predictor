@@ -1,42 +1,42 @@
 {
-  "num_games_done": 229102,
-  "num_positions": 17080760,
-  "num_correct": 7234759,
-  "num_correct_top3": 11729136,
-  "num_correct_top5": 13542237,
-  "num_legal": 16460859,
-  "probability_sum": 4893544.846631879,
-  "neg_log_likelihood_sum": 34019994.06897044,
+  "num_games_done": 458204,
+  "num_positions": 34141725,
+  "num_correct": 14466157,
+  "num_correct_top3": 23446988,
+  "num_correct_top5": 27067694,
+  "num_legal": 32902608,
+  "probability_sum": 9781699.710716316,
+  "neg_log_likelihood_sum": 67998275.42330796,
   "phase_counts": {
     "opening": [
-      2306403,
-      4582040
+      4612330,
+      9164080
     ],
     "middlegame": [
-      3259212,
-      8110974
+      6519110,
+      16219714
     ],
     "endgame": [
-      1669144,
-      4387746
+      3334717,
+      8757931
     ]
   },
   "movetype_counts": {
     "capture": [
-      2585090,
-      3958172
+      5165218,
+      7910165
     ],
     "castling": [
-      308732,
-      394351
+      617817,
+      788941
     ],
     "promotion": [
-      32208,
-      40642
+      64459,
+      81366
     ],
     "normal": [
-      4308729,
-      12687595
+      8618663,
+      25361253
     ]
   }
 }
