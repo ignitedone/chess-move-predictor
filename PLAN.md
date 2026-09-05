@@ -59,7 +59,7 @@ Work top to bottom. Log the reasoning behind any nontrivial decision in `REPORT_
   - [x] Epoch 2 (step 257942): centipawn @ 2,000 games -- model 129.9cp / human 58.6cp loss, 4.21% illegal-in-sample
   - [x] Epoch 3 (step 386913): core metrics @ 229,102 games -- accuracy 41.68%, top3 67.80%, top5 78.45%, legal-rate 96.09%, mean prob 28.07%, perplexity 7.62
   - [x] Epoch 3 (step 386913): centipawn @ 2,000 games -- model 124.8cp / human 58.8cp loss, 3.88% illegal-in-sample
-  - [ ] Epoch 4: core metrics @ 229,102 games -- in progress overnight (2026-09-05)
+  - [x] Epoch 4: core metrics @ 229,102 games -- accuracy 42.03%, top3 68.25%, top5 78.89%, legal-rate 96.25%, mean prob 28.43%, perplexity 7.46
   - [x] Epoch 4: centipawn @ 2,000 games -- model 121.9cp / human 58.6cp loss, 3.69% illegal-in-sample
   - [x] **Decision revised (2026-09-05): epoch 5 core metrics run half-scale FIRST, full-scale later.** Originally planned as full-test-set-only; changed so epoch 5 gets the same 229,102-game half-scale run as epochs 1-4 as an immediate, comparable data point, with the full 458,204-game run as an explicit separate follow-up once time allows -- the two are tracked as distinct entries below, never conflated.
   - [ ] Epoch 5 (final): core metrics @ 229,102 games (half test set, same as epochs 1-4) -- launched automatically once epoch 5 training completes and its checkpoint is secured (overnight pipeline, 2026-09-05)
