@@ -1,0 +1,18 @@
+{
+  "num_games_done": 12096,
+  "num_positions": 899615,
+  "phase_counts": {
+    "opening": [
+      248565,
+      562895
+    ],
+    "middlegame": [
+      62746,
+      172176
+    ],
+    "endgame": [
+      66726,
+      164544
+    ]
+  }
+}

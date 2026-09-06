@@ -1,0 +1,15 @@
+{
+  "num_positions": 8540122,
+  "accuracy_by_phase": {
+    "opening": 0.4389992807445166,
+    "middlegame": 0.3593617405296599,
+    "endgame": 0.39988631401520314
+  },
+  "phase_position_counts": {
+    "opening": 5334683,
+    "middlegame": 1634445,
+    "endgame": 1570994
+  },
+  "checkpoint": "weights/chess_transformer_386913.pt",
+  "num_games": 114551
+}
