@@ -138,6 +138,26 @@ def get_config() -> Dict[str, Any]:
                 work (e.g. Karvonen's Chess-GPT) so an unplayable move
                 is scored as "at least as bad as the worst clipped
                 blunder" rather than excluded from the average.
+            demo_num_games (int): number of test-split games to include
+                in the interactive demo (see `scripts/build_demo_cache.py`
+                and `demo.py`). Each game is capped at `context_size - 1`
+                plies so every position in the demo fits a single,
+                untruncated context window.
+            demo_cache_path (str): path to the demo's precomputed
+                Stockfish cache (games, moves, per-ply Stockfish move
+                and eval) -- the only data file `demo.py` reads at
+                startup for the actual/Stockfish columns, so the demo
+                never needs `test.csv` at presentation time.
+            demo_stockfish_depth (int): Stockfish search depth used both
+                by `scripts/build_demo_cache.py` (the actual/Stockfish
+                columns) and by `demo.py`'s live model-move eval --
+                deliberately a separate key from `stockfish_depth` (used
+                by the real centipawn-loss report metric) so the demo can
+                use a different depth for a nicer/more stable presentation
+                without touching the report's established methodology,
+                and so the two live/precomputed halves of the demo can
+                never independently drift to different depths (they did,
+                silently, before this key existed).
     """
     return {
         "seed": 561,
@@ -175,6 +195,9 @@ def get_config() -> Dict[str, Any]:
         "stockfish_depth": 10,
         "centipawn_num_workers": max(1, (os.cpu_count() or 2) // 2),
         "centipawn_max_loss": 1000,
+        "demo_num_games": 100,
+        "demo_cache_path": "data/demo/demo_games.json",
+        "demo_stockfish_depth": 16,
     }
 
 
